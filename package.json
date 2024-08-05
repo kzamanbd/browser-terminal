@@ -1,0 +1,29 @@
+{
+    "name": "browser-terminal",
+    "version": "1.0.0",
+    "description": "This is a full stack application with react and node",
+    "main": "index.js",
+    "workspaces": [
+        "client",
+        "server"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+        "client:dev": "npm run dev --workspace client",
+        "client:build": "npm run build --workspace client",
+        "server:dev": "npm run dev --workspace server",
+        "server:build": "npm run build --workspace server",
+        "build": "concurrently \"npm run server:build\" \"npm run client:build\""
+    },
+    "keywords": [
+        "react",
+        "node",
+        "express",
+        "socket.io"
+    ],
+    "author": "Kamruzzaman",
+    "license": "MIT",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
