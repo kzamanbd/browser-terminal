@@ -1,45 +1,39 @@
 import { v4 as uuidV4 } from 'uuid';
+import { Client } from 'ssh2';
 
 const rooms: any = {};
 
 export const socketConnection = (socket: any) => {
     console.log('Client connected', socket.id);
-    // create room
-    const roomCreate = (userId: string) => {
-        const roomId = uuidV4();
-        socket.emit('room-created', { roomId, userId });
-        rooms[roomId] = [];
-    };
 
-    // join room
-    const joinRoom = ({ roomId, peerId }: any) => {
-        if (rooms[roomId]) {
-            // if peerId not in rooms[roomId] then push it
-            if (!rooms[roomId].includes(peerId)) {
-                rooms[roomId].push(peerId);
-            }
-            socket.join(roomId);
-            socket.to(roomId).emit('user-joined', { peerId });
+    socket.on('ssh', (config: any) => {
+        const client = new Client();
+        console.log('Client :: connecting');
+        client
+            .on('ready', () => {
+                console.log('Client :: ready');
+                socket.emit('ssh-ready');
+                client.shell((err: any, stream: any) => {
+                    if (err) {
+                        socket.emit('ssh-error', err.message);
+                        return;
+                    }
+                    socket.on('ssh-input', (data: any) => {
+                        stream.write(data);
+                    });
+                    stream
+                        .on('data', (data: any) => {
+                            socket.emit('ssh-output', data.toString());
+                        })
+                        .on('close', () => {
+                            client.end();
+                        });
+                });
+            })
+            .connect(config);
+    });
 
-            socket.emit('get-users', {
-                roomId,
-                participants: rooms[roomId]
-            });
-        }
-
-        socket.on('disconnect', () => {
-            console.log('Client disconnected', peerId);
-            const index = rooms[roomId]?.indexOf(peerId);
-            if (index > -1) {
-                rooms[roomId].splice(index, 1);
-            }
-            socket.to(roomId).emit('user-disconnected', peerId);
-        });
-    };
-    // listen for events
-    socket.on('create-room', roomCreate);
-    socket.on('join-room', joinRoom);
-    socket.on('typing', (data: any) => {
-        socket.emit('typing', data);
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
     });
 };

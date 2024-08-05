@@ -48,9 +48,7 @@ app.set('trust proxy', true);
 // parse cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-const chat = io.of('/chat');
-(global as any).chat = chat;
-chat.on('connection', socketConnection);
+io.on('connection', socketConnection);
 
 // Routes
 app.use('/', routes);
