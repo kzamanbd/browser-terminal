@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+    # Express App
+    browser-terminal:
+        build: .
+        networks:
+            - express-network
+        volumes:
+            - ./:/app # if Read only mode sue :ro
+            - /app/node_modules # node_modules will be created in the container
+
+    # Nginx Server
+    nginx-server:
+        image: nginx:alpine
+        container_name: nginx-server
+        restart: unless-stopped
+        ports:
+            - '8000:80'
+        volumes:
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+        networks:
+            - express-network
+        depends_on:
+            - browser-terminal
+
+# Networks
+networks:
+    express-network:
+        driver: bridge
