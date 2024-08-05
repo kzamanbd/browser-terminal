@@ -4,7 +4,9 @@ import io from 'socket.io-client';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 
-const socket = io('http://localhost:8000');
+const URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+
+const socket = io(URL);
 
 function TerminalUI() {
     const [command, setCommand] = useState('');
