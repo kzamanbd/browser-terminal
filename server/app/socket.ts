@@ -1,7 +1,4 @@
-import { v4 as uuidV4 } from 'uuid';
 import { Client } from 'ssh2';
-
-const rooms: any = {};
 
 export const socketConnection = (socket: any) => {
     console.log('Client connected', socket.id);

@@ -1,7 +1,7 @@
 {
     "name": "ssh-server",
     "version": "1.0.0",
-    "description": "Express chat app",
+    "description": "SSH Server for remote access",
     "scripts": {
         "build": "npx tsc",
         "dev": "concurrently \"npx tsc --watch\" \"nodemon -q build/server.js\"",
@@ -21,13 +21,12 @@
         "express": "^4.17.3",
         "express-winston": "^4.2.0",
         "jsonwebtoken": "^9.0.0",
-        "mongoose": "^7.1.1",
+        "mongoose": "^8.5.2",
         "nodemailer": "^6.9.3",
         "socket.io": "^4.6.2",
         "ssh2": "^1.15.0",
         "uuid": "^9.0.0",
-        "winston": "^3.9.0",
-        "winston-mongodb": "^5.1.1"
+        "winston": "^3.9.0"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.0",
