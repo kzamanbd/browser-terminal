@@ -161,7 +161,18 @@ function TerminalUI() {
                 )
             )}
 
-            <div ref={terminalRef}></div>
+            <div className={`terminal ${!term && 'hidden'}`}>
+                <div className="terminal-header">
+                    <div className="buttons">
+                        <span className="button close"></span>
+                        <span className="button minimize"></span>
+                        <span className="button maximize"></span>
+                    </div>
+                </div>
+                <div className="terminal-body typewriter">
+                    <div className="w-full" ref={terminalRef}></div>
+                </div>
+            </div>
         </div>
     );
 }
