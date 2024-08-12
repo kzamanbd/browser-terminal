@@ -8,6 +8,13 @@
 # testing
 /coverage
 
+
+# Turbo
+.turbo
+
+# Vercel
+.vercel
+
 # production
 /build
 /dist
