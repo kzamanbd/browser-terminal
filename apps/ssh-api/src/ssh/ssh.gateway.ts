@@ -69,9 +69,6 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
                     return;
                 }
 
-                // Change directory to /var/www/html when shell starts
-                stream.write('cd /var/www/html\n');
-
                 client.on('ssh-input', (data) => {
                     stream.write(data);
                 });
@@ -81,7 +78,7 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
                     this.logger.log(`SOCKET RESIZE: ${JSON.stringify([data.rows, data.cols])}`);
                 });
 
-                stream.on('data', (data) => {
+                stream.on('data', (data: any) => {
                     client.emit('ssh-output', data.toString('utf-8'));
                 });
 

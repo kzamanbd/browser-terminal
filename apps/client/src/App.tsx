@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import XTerminalUI from './components/XTerminalUI';
 import socket from './utils/socket';
 
@@ -6,6 +6,12 @@ function App() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [input, setInput] = useState('root@203.188.245.58 -p 8823');
+
+    useEffect(() => {
+        socket.on('ssh-ready', () => {
+            setIsLoading(false);
+        });
+    }, []);
 
     const connectSSH = (e: React.FormEvent) => {
         e.preventDefault();

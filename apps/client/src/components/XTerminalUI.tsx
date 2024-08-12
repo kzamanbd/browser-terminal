@@ -1,26 +1,22 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
-import { Terminal } from '@xterm/xterm';
 import '@xterm/xterm/css/xterm.css';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import io from 'socket.io-client';
-
-const URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8081';
-
-const socket = io(URL);
+import socket from '../utils/socket';
 
 const instanceXTerm = new Terminal({
     cursorBlink: true,
     rows: 30
 });
+
 const fitAddon = new FitAddon();
 instanceXTerm.loadAddon(fitAddon);
 
 type TerminalProps = {
     isLoading: boolean;
-    setIsLoading?: Dispatch<SetStateAction<boolean>>;
 };
 
-const XTerminalUI = ({ isLoading, setIsLoading }: TerminalProps) => {
+const XTerminalUI = ({ isLoading }: TerminalProps) => {
     const terminalRef = useRef(null);
     const [xTerm, setXTerm] = useState<Terminal | null>(null);
     const [terminalTitle, setTerminalTitle] = useState('XTerminal');
@@ -32,24 +28,22 @@ const XTerminalUI = ({ isLoading, setIsLoading }: TerminalProps) => {
     }, [xTerm]);
 
     useEffect(() => {
-        if (terminalRef.current) {
+        if (terminalRef.current && !xTerm) {
             instanceXTerm.open(terminalRef.current);
             instanceXTerm.focus();
             fitAddon.fit();
             setXTerm(instanceXTerm);
             instanceXTerm.writeln('Welcome to XTerminal');
             instanceXTerm.write('\x1b[31m$ \x1b[0m');
-            console.log('XTerminal ready');
+            resizeScreen();
         }
-    }, []);
 
-    useEffect(() => {
         window.addEventListener('resize', resizeScreen, false);
 
         return () => {
             window.removeEventListener('resize', resizeScreen);
         };
-    }, [resizeScreen]);
+    }, [resizeScreen, xTerm]);
 
     useEffect(() => {
         socket.on('ssh-output', (data) => {
@@ -59,19 +53,12 @@ const XTerminalUI = ({ isLoading, setIsLoading }: TerminalProps) => {
         });
 
         socket.on('ssh-ready', () => {
-            console.log('SSH connection ready');
-            xTerm?.writeln('SSH connection ready');
-            if (setIsLoading) {
-                setIsLoading(false);
-            }
+            xTerm?.writeln('Successfully connected to server');
         });
 
         socket.on('ssh-error', (err) => {
             console.error('SSH Error:', err);
             xTerm?.writeln(`Error: ${err}`);
-            if (setIsLoading) {
-                setIsLoading(false);
-            }
         });
 
         if (xTerm) {
@@ -82,6 +69,7 @@ const XTerminalUI = ({ isLoading, setIsLoading }: TerminalProps) => {
 
         socket.on('title', (data: string) => {
             setTerminalTitle(data);
+            window.document.title = data;
         });
 
         return () => {
@@ -90,7 +78,7 @@ const XTerminalUI = ({ isLoading, setIsLoading }: TerminalProps) => {
             socket.off('ssh-error');
             socket.off('title');
         };
-    }, [xTerm, isLoading, setIsLoading]);
+    }, [xTerm]);
 
     useEffect(() => {
         if (isLoading && xTerm) {
