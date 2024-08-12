@@ -196,7 +196,7 @@ function App() {
                         <Button className="mr-2" type="button" onClick={closeModal}>
                             Cancel
                         </Button>
-                        <Button disabled={isLoading}>Connect</Button>
+                        <Button>Connect</Button>
                     </div>
                 </form>
             </Modal>
