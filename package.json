@@ -2,14 +2,10 @@
     "name": "browser-terminal",
     "version": "1.0.0",
     "description": "This is a full stack application with react and node",
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
     "engines": {
         "node": ">=18"
     },
-    "packageManager": "npm@10.7.0",
+    "packageManager": "pnpm@8.15.6",
     "scripts": {
         "build": "turbo build",
         "dev": "turbo dev",
@@ -25,6 +21,8 @@
     "author": "Kamruzzaman",
     "license": "MIT",
     "devDependencies": {
+        "@repo/eslint-config": "workspace:*",
+        "@repo/typescript-config": "workspace:*",
         "prettier": "^3.3.3",
         "turbo": "^2.0.12",
         "typescript": "^5.5.4"
