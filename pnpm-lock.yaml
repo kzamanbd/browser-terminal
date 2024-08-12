@@ -111,6 +111,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
+      socket.io:
+        specifier: ^4.7.5
+        version: 4.7.5
       ssh2:
         specifier: ^1.15.0
         version: 1.15.0
