@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import XTerminalUI from './XTerminalUI';
-import socket from './socket';
+import XTerminalUI from './components/XTerminalUI';
+import socket from './utils/socket';
 
 function App() {
     const [isLoading, setIsLoading] = useState(false);
