@@ -1,6 +1,6 @@
-# 📝 Web SSH Client using ssh2, socket.io, xterm.js, and express
+# 📝 Web SSH Client
 
-This is a simple web ssh terminal app that allows you to connect to a remote server via ssh and execute commands.
+This is a simple web ssh terminal app that allows you to connect to a remote server via ssh and execute commands. Using ssh2, socket.io, xterm.js, and express.
 
 ## Features
 
