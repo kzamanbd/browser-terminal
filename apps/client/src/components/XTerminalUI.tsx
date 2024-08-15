@@ -113,4 +113,3 @@ const XTerminalUI = ({ isLoading }: TerminalProps) => {
 };
 
 export default XTerminalUI;
-
