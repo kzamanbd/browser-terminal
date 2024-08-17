@@ -11,7 +11,7 @@ function App() {
 
     const [input, setInput] = useState('root@203.188.245.58 -p 8886');
     const [isModal, setIsModal] = useState(false);
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState(import.meta.env.VITE_SSH_PASSWORD as string);
     const [isPrivateKey, setIsPrivateKey] = useState(false);
     const [privateKey, setPrivateKey] = useState('');
     const [showPassword, setShowPassword] = useState(false);

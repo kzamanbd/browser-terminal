@@ -8,7 +8,6 @@ import socket from '../utils/socket';
 
 const instanceXTerm = new Terminal({
     cursorBlink: true,
-    fontSize: 14,
     fontFamily: 'monospace'
 });
 
@@ -37,14 +36,13 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
 
     useEffect(() => {
         if (terminalRef.current && !xTerm) {
-            fitAddon.fit();
             instanceXTerm.focus();
             instanceXTerm.open(terminalRef.current);
             setXTerm(instanceXTerm);
             instanceXTerm.writeln('Welcome to XTerminal');
             instanceXTerm.write('\x1b[31m$ \x1b[0m');
-            resizeScreen();
         }
+        resizeScreen();
 
         window.addEventListener('resize', resizeScreen, false);
 
@@ -92,6 +90,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             socket.off('ssh-output');
             socket.off('ssh-ready');
             socket.off('ssh-error');
+            socket.off('resize');
             socket.off('close');
         };
     }, [xTerm]);
@@ -127,7 +126,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
                     </div>
                 )}
             </div>
-            <div className="pl-4 pt-4" ref={terminalRef}></div>
+            <div className="h-[calc(100%-50px)] pl-4 pt-4" ref={terminalRef}></div>
         </div>
     );
 };
