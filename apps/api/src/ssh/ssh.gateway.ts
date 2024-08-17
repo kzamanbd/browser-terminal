@@ -129,4 +129,23 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             client.emit('ssh-error', 'Connection error: ' + err.message);
         }
     }
+
+    @SubscribeMessage('ssh-input')
+    handleSshInput(client: Socket, data: string) {
+        this.logger.log(`Client :: ssh-input: ${data}`);
+        // Forward the input to the SSH server
+
+        // if backspace is pressed, remove the last character
+        if (data === '\x7f') {
+            client.emit('ssh-output', '\b \b');
+        }
+        // if enter is pressed, add a newline
+        else if (data === '\r') {
+            client.emit('ssh-output', '\n');
+        }
+        // otherwise, emit the input
+        else {
+            client.emit('ssh-output', data);
+        }
+    }
 }

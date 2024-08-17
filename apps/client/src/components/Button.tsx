@@ -5,19 +5,17 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export default function Button({
-    className = '',
+    className = 'btn-light',
     disabled,
     children,
-    variant = 'light',
     ...props
 }: ButtonProps) {
     return (
         <button
             {...props}
-            className={`btn btn-${variant} h-max ${disabled && 'opacity-25'} ${className}`}
+            className={`btn h-max ${disabled && 'opacity-25'} ${className}`}
             disabled={disabled}>
             {children}
         </button>
     );
 }
-

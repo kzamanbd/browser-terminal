@@ -9,7 +9,7 @@ import Button from './components/Button';
 function App() {
     const [isLoading, setIsLoading] = useState(false);
 
-    const [input, setInput] = useState('root@203.188.245.58 -p 8823');
+    const [input, setInput] = useState('root@203.188.245.58 -p 8886');
     const [isModal, setIsModal] = useState(false);
     const [password, setPassword] = useState('');
     const [isPrivateKey, setIsPrivateKey] = useState(false);
@@ -103,10 +103,6 @@ function App() {
 
     return (
         <div className="mx-auto flex flex-col max-w-6xl my-4">
-            <Button type="button" className="w-max" onClick={toggleModal}>
-                Reconnect
-            </Button>
-
             <Modal show={isModal} maxWidth="md" onClose={closeModal}>
                 <form onSubmit={connectSSH}>
                     <div>
@@ -126,14 +122,14 @@ function App() {
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel htmlFor="password" value="Password" />
+                        <InputLabel htmlFor="public-key" value="Private Key" />
                         {isPrivateKey ? (
                             <input
                                 type="file"
-                                id="password"
-                                name="password"
+                                id="public-key"
+                                name="public-key"
                                 onChange={handlePrivateKey}
-                                className="mt-1 block w-full border-1 p-1.5"
+                                className="form-input bg-gray-100 rounded-md p-1.5 block w-full"
                             />
                         ) : (
                             <div className="relative">
@@ -192,16 +188,16 @@ function App() {
                         <span className="mx-2">With Private Key</span>
                     </label>
 
-                    <div className="flex items-center mt-4 gap-3 justify-end">
+                    <div className="flex items-center mt-4 gap-3 justify-center">
                         <Button className="mr-2" type="button" onClick={closeModal}>
                             Cancel
                         </Button>
-                        <Button>Connect</Button>
+                        <Button className="btn-primary">Connect</Button>
                     </div>
                 </form>
             </Modal>
 
-            <XTerminalUI isLoading={isLoading} />
+            <XTerminalUI isLoading={isLoading} reConnect={toggleModal} />
         </div>
     );
 }

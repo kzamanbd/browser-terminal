@@ -2,21 +2,30 @@ import '@xterm/xterm/css/xterm.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
+import { WebLinksAddon } from '@xterm/addon-web-links';
+import { SearchAddon } from '@xterm/addon-search';
 import socket from '../utils/socket';
 
 const instanceXTerm = new Terminal({
     cursorBlink: true,
-    rows: 30
+    fontSize: 14,
+    fontFamily: 'monospace',
+    rows: 35
 });
 
 const fitAddon = new FitAddon();
+const webLinksAddon = new WebLinksAddon();
+const searchAddon = new SearchAddon();
 instanceXTerm.loadAddon(fitAddon);
+instanceXTerm.loadAddon(webLinksAddon);
+instanceXTerm.loadAddon(searchAddon);
 
 type TerminalProps = {
     isLoading: boolean;
+    reConnect?: () => void;
 };
 
-const XTerminalUI = ({ isLoading }: TerminalProps) => {
+const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
     const terminalRef = useRef(null);
     const [xTerm, setXTerm] = useState<Terminal | null>(null);
     const [terminalTitle, setTerminalTitle] = useState('XTerminal');
@@ -90,21 +99,21 @@ const XTerminalUI = ({ isLoading }: TerminalProps) => {
     return (
         <div className="w-full">
             <div className="w-full shadow-2xl subpixel-antialiased rounded h-full bg-black border-black mx-auto">
-                <div
-                    className="flex items-center h-8 rounded-t bg-gray-200 border-b border-gray-500 text-center text-black"
-                    id="headerTerminal">
-                    <div
-                        className="flex ml-2 items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"
-                        id="closebtn"></div>
-                    <div
-                        className="ml-2 border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"
-                        id="minbtn"></div>
-                    <div
-                        className="ml-2 border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"
-                        id="maxbtn"></div>
-                    <div className="mx-auto pr-16" id="terminaltitle">
+                <div className="p-2 flex items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
+                    <div className="flex gap-2">
+                        <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
+                        <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
+                        <div className="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"></div>
+                    </div>
+
+                    <div className="mx-auto pr-16">
                         <p className="text-center text-sm">{terminalTitle}</p>
                     </div>
+                    {reConnect && (
+                        <button type="button" className="w-max" onClick={reConnect}>
+                            Reconnect
+                        </button>
+                    )}
                 </div>
                 <div className="w-full pl-4 pt-4" ref={terminalRef}></div>
             </div>
