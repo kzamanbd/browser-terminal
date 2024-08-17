@@ -104,7 +104,6 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         });
 
         return () => {
-            socket.off('title');
             socket.off('ssh-output');
             socket.off('ssh-ready');
             socket.off('ssh-error');
