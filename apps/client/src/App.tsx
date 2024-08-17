@@ -102,7 +102,9 @@ function App() {
     };
 
     return (
-        <div className="mx-auto flex flex-col max-w-6xl my-4">
+        <div className="h-full">
+            <XTerminalUI isLoading={isLoading} reConnect={toggleModal} />
+
             <Modal show={isModal} maxWidth="md" onClose={closeModal}>
                 <form onSubmit={connectSSH}>
                     <div>
@@ -196,8 +198,6 @@ function App() {
                     </div>
                 </form>
             </Modal>
-
-            <XTerminalUI isLoading={isLoading} reConnect={toggleModal} />
         </div>
     );
 }
