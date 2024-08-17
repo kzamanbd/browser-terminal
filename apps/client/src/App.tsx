@@ -1,7 +1,7 @@
-import Terminal from './pages/XTerminal';
+import XTerminal from './pages/XTerminal';
 
 function App() {
-    return <Terminal />;
+    return <XTerminal />;
 }
 
 export default App;
