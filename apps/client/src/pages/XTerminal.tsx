@@ -31,6 +31,15 @@ export default function XTerminal() {
         socket.on('ssh-ready', () => {
             setIsLoading(false);
         });
+        socket.on('title', (data: string) => {
+            window.document.title = data;
+            setTitle(data);
+        });
+
+        return () => {
+            socket.off('ssh-ready');
+            socket.off('title');
+        };
     }, []);
 
     const connectionAction = ({
@@ -137,7 +146,7 @@ export default function XTerminal() {
                         <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
                     </div>
                 </div>
-                <XTerminalUI isLoading={isLoading} theme={theme} setTitle={setTitle} />
+                <XTerminalUI loading={isLoading} theme={theme} />
             </div>
 
             <Modal show={isModal} maxWidth="md" onClose={closeModal}>
@@ -148,6 +157,7 @@ export default function XTerminal() {
                         <TextInput
                             id="name"
                             name="name"
+                            type="search"
                             value={input}
                             className="mt-1 block w-full"
                             autoComplete="name"

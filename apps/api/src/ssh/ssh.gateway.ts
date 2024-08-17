@@ -169,7 +169,6 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             client.emit('ssh-close');
             this.sshConnectionEstablished = false;
             client.emit('title', 'XTerminal');
-            client.emit('ssh-output', 'Connection closed');
         });
 
         try {
