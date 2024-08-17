@@ -40,7 +40,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             instanceXTerm.open(terminalRef.current);
             setXTerm(instanceXTerm);
             instanceXTerm.writeln('Welcome to XTerminal');
-            instanceXTerm.write('\x1b[31m$ \x1b[0m');
+            instanceXTerm.write('[root@kzaman ~]\x1b[31m$ \x1b[0m');
         }
         resizeScreen();
 
