@@ -5,6 +5,8 @@ import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { SearchAddon } from '@xterm/addon-search';
 import socket from '../utils/socket';
+import ThemesMenu from './ThemesMenu';
+import { IXTerminal } from '../utils/themes';
 
 const instanceXTerm = new Terminal({
     cursorBlink: true,
@@ -14,6 +16,7 @@ const instanceXTerm = new Terminal({
 const fitAddon = new FitAddon();
 const webLinksAddon = new WebLinksAddon();
 const searchAddon = new SearchAddon();
+
 instanceXTerm.loadAddon(fitAddon);
 instanceXTerm.loadAddon(webLinksAddon);
 instanceXTerm.loadAddon(searchAddon);
@@ -24,7 +27,7 @@ type TerminalProps = {
 };
 
 const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
-    const terminalRef = useRef(null);
+    const terminalRef = useRef(null as HTMLDivElement | null);
     const [xTerm, setXTerm] = useState<Terminal | null>(null);
     const [terminalTitle, setTerminalTitle] = useState('XTerminal');
 
@@ -41,6 +44,15 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             setXTerm(instanceXTerm);
             instanceXTerm.writeln('Welcome to XTerminal');
             instanceXTerm.write('[root@kzaman ~]\x1b[31m$ \x1b[0m');
+            // set theme if available in local storage
+            const theme = localStorage.getItem('theme');
+            if (theme) {
+                const parsedTheme = JSON.parse(theme);
+                instanceXTerm.options.theme = parsedTheme;
+
+                // set background color for the terminal
+                terminalRef.current.style.backgroundColor = parsedTheme.background;
+            }
         }
         resizeScreen();
 
@@ -102,16 +114,26 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
         }
     }, [isLoading, xTerm]);
 
+    const themeChangeHandler = ({ theme }: IXTerminal) => {
+        console.log('themeChange:', theme);
+        instanceXTerm.options.theme = theme;
+        // set background color for the terminal
+        if (terminalRef.current) {
+            terminalRef.current.style.background = theme.background as string;
+        }
+        localStorage.setItem('theme', JSON.stringify(theme));
+    };
+
     return (
         <div className="shadow-2xl subpixel-antialiased rounded h-full bg-black border-black mx-auto">
             <div className="p-2 grid grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
-                <div className="flex gap-2">
+                <div className="relative flex gap-2">
                     <button type="button">File</button>
                     <button type="button">Edit</button>
                     <button type="button">View</button>
-                    <button type="button">Terminal</button>
+                    <ThemesMenu changeTheme={themeChangeHandler} />
                     <button type="button" onClick={reConnect}>
-                        Connect
+                        New Connection
                     </button>
                     <button type="button">Help</button>
                 </div>

@@ -31,3 +31,7 @@ body {
     height: 100vh;
     overflow: hidden;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
