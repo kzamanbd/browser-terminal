@@ -1,12 +1,10 @@
 import '@xterm/xterm/css/xterm.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Terminal } from '@xterm/xterm';
+import { Terminal, ITheme } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { SearchAddon } from '@xterm/addon-search';
 import socket from '../utils/socket';
-import ThemesMenu from './ThemesMenu';
-import { IXTerminal } from '../utils/themes';
 
 const instanceXTerm = new Terminal({
     cursorBlink: true,
@@ -23,13 +21,13 @@ instanceXTerm.loadAddon(searchAddon);
 
 type TerminalProps = {
     isLoading: boolean;
-    reConnect?: () => void;
+    theme?: ITheme;
+    setTitle?: (title: string) => void;
 };
 
-const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
+const XTerminalUI = ({ isLoading, theme, setTitle }: TerminalProps) => {
     const terminalRef = useRef(null as HTMLDivElement | null);
     const [xTerm, setXTerm] = useState<Terminal | null>(null);
-    const [terminalTitle, setTerminalTitle] = useState('XTerminal');
 
     const resizeScreen = useCallback(() => {
         fitAddon.fit();
@@ -87,8 +85,8 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
         }
 
         socket.on('title', (data: string) => {
-            setTerminalTitle(data);
             window.document.title = data;
+            if (setTitle) setTitle(data);
         });
 
         socket.on('no-connection-output', () => {
@@ -111,7 +109,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             socket.off('close');
             socket.off('no-connection-output');
         };
-    }, [xTerm]);
+    }, [xTerm, setTitle]);
 
     useEffect(() => {
         if (isLoading && xTerm) {
@@ -120,43 +118,18 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
         }
     }, [isLoading, xTerm]);
 
-    const themeChangeHandler = ({ theme }: IXTerminal) => {
-        console.log('themeChange:', theme);
-        instanceXTerm.options.theme = theme;
-        // set background color for the terminal
-        if (terminalRef.current) {
-            terminalRef.current.style.background = theme.background as string;
+    useEffect(() => {
+        if (theme?.background) {
+            console.log('themeChange:', theme);
+            instanceXTerm.options.theme = theme;
+            // set background color for the terminal
+            if (terminalRef.current) {
+                terminalRef.current.style.background = theme.background as string;
+            }
         }
-        localStorage.setItem('theme', JSON.stringify(theme));
-    };
+    }, [theme]);
 
-    return (
-        <div className="shadow-2xl subpixel-antialiased rounded h-full bg-black border-black mx-auto">
-            <div className="p-2 grid grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
-                <div className="relative flex gap-2">
-                    <button type="button">File</button>
-                    <button type="button">Edit</button>
-                    <button type="button">View</button>
-                    <ThemesMenu changeTheme={themeChangeHandler} />
-                    <button type="button" onClick={reConnect}>
-                        New Connection
-                    </button>
-                    <button type="button">Help</button>
-                </div>
-
-                <p className="text-center text-sm">{terminalTitle}</p>
-
-                {reConnect && (
-                    <div className="flex ml-auto gap-2">
-                        <div className="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"></div>
-                        <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
-                        <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
-                    </div>
-                )}
-            </div>
-            <div className="h-[calc(100%-50px)] pl-4 pt-4" ref={terminalRef}></div>
-        </div>
-    );
+    return <div className="h-[calc(100%-50px)] pl-4 pt-4" ref={terminalRef}></div>;
 };
 
 export default XTerminalUI;
