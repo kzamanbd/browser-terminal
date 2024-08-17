@@ -107,7 +107,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
     return (
         <div className="w-full">
             <div className="w-full shadow-2xl subpixel-antialiased rounded h-full bg-black border-black mx-auto">
-                <div className="p-2 flex items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
+                <div className="p-2 grid grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
                     <div className="flex gap-2">
                         <button type="button">File</button>
                         <button type="button">Edit</button>
@@ -119,14 +119,13 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
                         <button type="button">Help</button>
                     </div>
 
-                    <div className="mx-auto pr-16">
-                        <p className="text-center text-sm">{terminalTitle}</p>
-                    </div>
+                    <p className="text-center text-sm">{terminalTitle}</p>
+
                     {reConnect && (
-                        <div className="flex gap-2">
-                            <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
-                            <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
+                        <div className="flex ml-auto gap-2">
                             <div className="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"></div>
+                            <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
+                            <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
                         </div>
                     )}
                 </div>

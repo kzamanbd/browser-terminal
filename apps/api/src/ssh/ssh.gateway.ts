@@ -97,7 +97,16 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         sshClient.on('ready', () => {
             this.logger.log('Client :: ready');
             client.emit('ssh-ready');
-            client.emit('title', `ssh://${finalConfig.username}@${finalConfig.host}`);
+            // get hostname
+            sshClient.exec('hostname', (err, stream) => {
+                if (err) {
+                    this.logger.error(`Error getting hostname: ${err.message}`);
+                    return;
+                }
+                stream.on('data', (data: string) => {
+                    client.emit('title', `${finalConfig.username}@${data}:~`);
+                });
+            });
             this.sshConnectionEstablished = true;
             sshClient.shell((err, stream) => {
                 if (err) {
