@@ -185,13 +185,11 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             // if backspace is pressed, remove the last character
             if (data === '\x7f') {
                 client.emit('ssh-output', '\b \b');
-            }
-            // if enter is pressed, add a newline
-            else if (data === '\r') {
-                client.emit('ssh-output', '\n');
-            }
-            // otherwise, emit the input
-            else {
+            } else if (data === '\r') {
+                // if enter is pressed, emit a new line
+                client.emit('no-connection-output');
+            } else {
+                // otherwise, emit the input
                 client.emit('ssh-output', data);
             }
         }

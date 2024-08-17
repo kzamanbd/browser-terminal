@@ -91,6 +91,11 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             window.document.title = data;
         });
 
+        socket.on('no-connection-output', () => {
+            xTerm?.writeln('\r\nCommand not found! Please check the command and try again.\r');
+            xTerm?.write('[root@kzaman ~]\x1b[31m$ \x1b[0m');
+        });
+
         socket.on('close', () => {
             if (xTerm) {
                 xTerm.writeln('Connection closed');
@@ -104,6 +109,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             socket.off('ssh-error');
             socket.off('resize');
             socket.off('close');
+            socket.off('no-connection-output');
         };
     }, [xTerm]);
 
