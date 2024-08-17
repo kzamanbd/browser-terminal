@@ -21,21 +21,56 @@ export type ConnectionConfig = {
 
 @WebSocketGateway({ cors: true })
 export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+    /**
+     * Logger instance for the SshGateway class
+     * @private
+     */
     private readonly logger = new Logger(SshGateway.name);
+
+    /**
+     * Flag to indicate whether an SSH connection has been established
+     * @private
+     */
+    private sshConnectionEstablished = false;
+
+    /**
+     * The WebSocket server instance
+     * @private
+     * @type {Server}
+     */
 
     @WebSocketServer() server: Server;
 
+    /**
+     * Called after the WebSocket server has been initialized
+     */
     afterInit() {
         this.logger.log('WebSocket server initialized');
     }
 
+    /**
+     * Handle a new client connection
+     * @param client The client socket that has connected
+     */
     handleConnection(client: Socket) {
         this.logger.log(`Client connected: ${client.id}`);
     }
 
+    /**
+     * Handle a client disconnection
+     * @param client The client socket that has disconnected
+     * @param reason The reason for the disconnection
+     */
+
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`);
     }
+
+    /**
+     * Handle an SSH connection request from a client
+     * @param client The client socket that sent the message
+     * @param config The SSH connection configuration
+     */
 
     @SubscribeMessage('ssh')
     handleSsh(client: Socket, config: ConnectionConfig) {
@@ -58,10 +93,12 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             ...config
         };
 
+        // Log the connection configuration
         sshClient.on('ready', () => {
             this.logger.log('Client :: ready');
             client.emit('ssh-ready');
             client.emit('title', `ssh://${finalConfig.username}@${finalConfig.host}`);
+            this.sshConnectionEstablished = true;
             sshClient.shell((err, stream) => {
                 if (err) {
                     client.emit('ssh-error', err.message);
@@ -121,6 +158,9 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         sshClient.on('close', () => {
             this.logger.log('SSH connection closed');
             client.emit('ssh-close');
+            this.sshConnectionEstablished = false;
+            client.emit('title', 'XTerminal');
+            client.emit('ssh-output', 'Connection closed');
         });
 
         try {
@@ -132,20 +172,19 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
     @SubscribeMessage('ssh-input')
     handleSshInput(client: Socket, data: string) {
-        this.logger.log(`Client :: ssh-input: ${data}`);
-        // Forward the input to the SSH server
-
-        // if backspace is pressed, remove the last character
-        if (data === '\x7f') {
-            client.emit('ssh-output', '\b \b');
-        }
-        // if enter is pressed, add a newline
-        else if (data === '\r') {
-            client.emit('ssh-output', '\n');
-        }
-        // otherwise, emit the input
-        else {
-            client.emit('ssh-output', data);
+        if (!this.sshConnectionEstablished) {
+            // if backspace is pressed, remove the last character
+            if (data === '\x7f') {
+                client.emit('ssh-output', '\b \b');
+            }
+            // if enter is pressed, add a newline
+            else if (data === '\r') {
+                client.emit('ssh-output', '\n');
+            }
+            // otherwise, emit the input
+            else {
+                client.emit('ssh-output', data);
+            }
         }
     }
 }

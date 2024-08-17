@@ -38,9 +38,9 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
 
     useEffect(() => {
         if (terminalRef.current && !xTerm) {
-            instanceXTerm.open(terminalRef.current);
-            instanceXTerm.focus();
             fitAddon.fit();
+            instanceXTerm.focus();
+            instanceXTerm.open(terminalRef.current);
             setXTerm(instanceXTerm);
             instanceXTerm.writeln('Welcome to XTerminal');
             instanceXTerm.write('\x1b[31m$ \x1b[0m');
@@ -63,6 +63,7 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
 
         socket.on('ssh-ready', () => {
             xTerm?.writeln('Successfully connected to server');
+            instanceXTerm.focus();
         });
 
         socket.on('ssh-error', (err) => {
@@ -81,11 +82,18 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             window.document.title = data;
         });
 
+        socket.on('close', () => {
+            if (xTerm) {
+                xTerm.writeln('Connection closed');
+            }
+        });
+
         return () => {
+            socket.off('title');
             socket.off('ssh-output');
             socket.off('ssh-ready');
             socket.off('ssh-error');
-            socket.off('title');
+            socket.off('close');
         };
     }, [xTerm]);
 
@@ -101,18 +109,25 @@ const XTerminalUI = ({ isLoading, reConnect }: TerminalProps) => {
             <div className="w-full shadow-2xl subpixel-antialiased rounded h-full bg-black border-black mx-auto">
                 <div className="p-2 flex items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
                     <div className="flex gap-2">
-                        <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
-                        <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
-                        <div className="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"></div>
+                        <button type="button">File</button>
+                        <button type="button">Edit</button>
+                        <button type="button">View</button>
+                        <button type="button">Terminal</button>
+                        <button type="button" onClick={reConnect}>
+                            Connect
+                        </button>
+                        <button type="button">Help</button>
                     </div>
 
                     <div className="mx-auto pr-16">
                         <p className="text-center text-sm">{terminalTitle}</p>
                     </div>
                     {reConnect && (
-                        <button type="button" className="w-max" onClick={reConnect}>
-                            Reconnect
-                        </button>
+                        <div className="flex gap-2">
+                            <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
+                            <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
+                            <div className="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"></div>
+                        </div>
                     )}
                 </div>
                 <div className="w-full pl-4 pt-4" ref={terminalRef}></div>
