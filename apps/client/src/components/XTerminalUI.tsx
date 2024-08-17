@@ -1,10 +1,11 @@
+import socket from '@/utils/socket';
+import { defaultTheme } from '@/utils/themes';
+import { FitAddon } from '@xterm/addon-fit';
+import { SearchAddon } from '@xterm/addon-search';
+import { WebLinksAddon } from '@xterm/addon-web-links';
+import { ITheme, Terminal } from '@xterm/xterm';
 import '@xterm/xterm/css/xterm.css';
 import { useCallback, useEffect, useRef } from 'react';
-import { Terminal, ITheme } from '@xterm/xterm';
-import { FitAddon } from '@xterm/addon-fit';
-import { WebLinksAddon } from '@xterm/addon-web-links';
-import { SearchAddon } from '@xterm/addon-search';
-import socket from '../utils/socket';
 
 const fitAddon = new FitAddon();
 const webLinksAddon = new WebLinksAddon();
@@ -21,7 +22,8 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
     const xtermRef = useRef(
         new Terminal({
             cursorBlink: true,
-            fontFamily: 'monospace'
+            fontFamily: 'monospace',
+            theme: defaultTheme
         })
     );
 

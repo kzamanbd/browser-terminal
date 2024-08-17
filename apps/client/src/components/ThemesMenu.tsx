@@ -1,5 +1,5 @@
+import themes, { IXTerminal } from '@/utils/themes';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import themes, { IXTerminal } from '../utils/themes';
 
 type ThemeProps = {
     changeTheme: (theme: IXTerminal) => void;

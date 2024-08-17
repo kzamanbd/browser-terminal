@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import Button from '@/components/Button';
+import InputLabel from '@/components/InputLabel';
+import Modal from '@/components/Modal';
+import TextInput from '@/components/TextInput';
+import ThemesMenu from '@/components/ThemesMenu';
 import XTerminalUI from '@/components/XTerminalUI';
 import socket from '@/utils/socket';
-import Modal from '@/components/Modal';
-import InputLabel from '@/components/InputLabel';
-import TextInput from '@/components/TextInput';
-import Button from '@/components/Button';
-import ThemesMenu from '@/components/ThemesMenu';
-import { ITheme } from '@xterm/xterm';
 import { IXTerminal } from '@/utils/themes';
+import { ITheme } from '@xterm/xterm';
+import { useEffect, useState } from 'react';
 
 export default function XTerminal() {
     const [isLoading, setIsLoading] = useState(false);

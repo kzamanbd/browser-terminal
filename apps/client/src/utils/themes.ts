@@ -4,60 +4,35 @@ export type IXTerminal = {
     name: string;
     theme: ITheme;
 };
+
+export const defaultTheme = {
+    foreground: '#f8f8f2',
+    background: '#282a36',
+    cursor: '#f8f8f2',
+    selectionBackground: '#44475a',
+    selectionForeground: '#f8f8f2',
+    selectionInactiveBackground: '#44475a',
+    black: '#282a36',
+    red: '#ff5555',
+    green: '#50fa7b',
+    yellow: '#f1fa8c',
+    blue: '#bd93f9',
+    magenta: '#ff79c6',
+    cyan: '#8be9fd',
+    white: '#f8f8f2',
+    brightBlack: '#6272a4',
+    brightRed: '#ff6e6e',
+    brightGreen: '#69ff94',
+    brightYellow: '#ffffa5',
+    brightBlue: '#d6acff',
+    brightMagenta: '#ff92df',
+    brightCyan: '#a4ffff',
+    brightWhite: '#ffffff'
+};
 const themes: IXTerminal[] = [
     {
         name: 'Default',
-        theme: {
-            foreground: '#f8f8f2',
-            background: '#272822',
-            cursor: '#f8f8f2',
-            selectionBackground: '#49483e',
-            selectionForeground: '#f8f8f2',
-            selectionInactiveBackground: '#49483e',
-            black: '#272822',
-            red: '#f92672',
-            green: '#a6e22e',
-            yellow: '#f4bf75',
-            blue: '#66d9ef',
-            magenta: '#ae81ff',
-            cyan: '#a1efe4',
-            white: '#f8f8f2',
-            brightBlack: '#75715e',
-            brightRed: '#f92672',
-            brightGreen: '#a6e22e',
-            brightYellow: '#f4bf75',
-            brightBlue: '#66d9ef',
-            brightMagenta: '#ae81ff',
-            brightCyan: '#a1efe4',
-            brightWhite: '#f9f8f5'
-        }
-    },
-    {
-        name: 'Dracula',
-        theme: {
-            foreground: '#f8f8f2',
-            background: '#282a36',
-            cursor: '#f8f8f2',
-            selectionBackground: '#44475a',
-            selectionForeground: '#f8f8f2',
-            selectionInactiveBackground: '#44475a',
-            black: '#282a36',
-            red: '#ff5555',
-            green: '#50fa7b',
-            yellow: '#f1fa8c',
-            blue: '#bd93f9',
-            magenta: '#ff79c6',
-            cyan: '#8be9fd',
-            white: '#f8f8f2',
-            brightBlack: '#6272a4',
-            brightRed: '#ff6e6e',
-            brightGreen: '#69ff94',
-            brightYellow: '#ffffa5',
-            brightBlue: '#d6acff',
-            brightMagenta: '#ff92df',
-            brightCyan: '#a4ffff',
-            brightWhite: '#ffffff'
-        }
+        theme: defaultTheme
     },
     {
         name: 'One Dark',
