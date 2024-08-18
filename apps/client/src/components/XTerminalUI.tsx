@@ -2,6 +2,7 @@ import socket from '@/utils/socket';
 import { defaultTheme } from '@/utils/themes';
 import { FitAddon } from '@xterm/addon-fit';
 import { SearchAddon } from '@xterm/addon-search';
+import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { ITheme, Terminal } from '@xterm/xterm';
 import '@xterm/xterm/css/xterm.css';
@@ -10,6 +11,7 @@ import { useCallback, useEffect, useRef } from 'react';
 const fitAddon = new FitAddon();
 const webLinksAddon = new WebLinksAddon();
 const searchAddon = new SearchAddon();
+const unicode11Addon = new Unicode11Addon();
 
 type TerminalProps = {
     loading: boolean;
@@ -51,8 +53,9 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
     useEffect(() => {
         const xterm = xtermRef.current;
         xterm.loadAddon(fitAddon);
-        xterm.loadAddon(webLinksAddon);
         xterm.loadAddon(searchAddon);
+        xterm.loadAddon(webLinksAddon);
+        xterm.loadAddon(unicode11Addon);
         xterm.open(terminalRef.current);
         xterm.writeln('Welcome to XTerminal');
         defaultInput();
