@@ -1,14 +1,14 @@
+import { Logger } from '@nestjs/common';
 import {
-    WebSocketGateway,
-    WebSocketServer,
-    SubscribeMessage,
-    OnGatewayInit,
     OnGatewayConnection,
-    OnGatewayDisconnect
+    OnGatewayDisconnect,
+    OnGatewayInit,
+    SubscribeMessage,
+    WebSocketGateway,
+    WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Client } from 'ssh2';
-import { Logger } from '@nestjs/common';
 
 export type ConnectionConfig = {
     host: string;
@@ -70,10 +70,13 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
      * Handle an SSH connection request from a client
      * @param client The client socket that sent the message
      * @param config The SSH connection configuration
+     * @emits ssh-ready, ssh-error, ssh-output, ssh-close, ssh-banner, ssh-keyboard-interactive
      */
 
     @SubscribeMessage('ssh')
     handleSsh(client: Socket, config: ConnectionConfig) {
+        client.removeAllListeners('ssh-input');
+
         const sshClient = new Client();
         this.logger.log('Client :: connecting...');
 
@@ -177,6 +180,14 @@ export class SshGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             client.emit('ssh-error', 'Connection error: ' + err.message);
         }
     }
+
+    /**
+     * Handle an SSH input event from a client
+     * @param client
+     * @param data string
+     * @emits ssh-output
+     * @returns void
+     */
 
     @SubscribeMessage('ssh-input')
     handleSshInput(client: Socket, data: string) {
