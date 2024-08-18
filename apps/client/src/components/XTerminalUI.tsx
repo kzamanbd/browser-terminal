@@ -25,7 +25,8 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         new Terminal({
             cursorBlink: true,
             fontFamily: 'monospace',
-            theme: defaultTheme
+            theme: defaultTheme,
+            allowProposedApi: true
         })
     );
 
@@ -56,6 +57,7 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         xterm.loadAddon(searchAddon);
         xterm.loadAddon(webLinksAddon);
         xterm.loadAddon(unicode11Addon);
+        xterm.unicode.activeVersion = '11';
         xterm.open(terminalRef.current);
         xterm.writeln('Welcome to XTerminal');
         defaultInput();
