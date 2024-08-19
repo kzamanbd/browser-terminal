@@ -25,7 +25,7 @@ const AuthenticatedLayout = ({ header, children }: PropsWithChildren<{ header?: 
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink to="/">Dashboard</NavLink>
+                                <NavLink to="/dashboard">Dashboard</NavLink>
 
                                 <NavLink to="/sites">Hosted Sites</NavLink>
 
@@ -107,7 +107,7 @@ const AuthenticatedLayout = ({ header, children }: PropsWithChildren<{ header?: 
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink to="/">Dashboard</ResponsiveNavLink>
+                        <ResponsiveNavLink to="/dashboard">Dashboard</ResponsiveNavLink>
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">

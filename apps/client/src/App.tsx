@@ -6,11 +6,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 const router = createBrowserRouter([
     {
         path: '/',
-        Component: Index
+        Component: XTerminal
     },
     {
-        path: '/ssh',
-        Component: XTerminal
+        path: '/dashboard',
+        Component: Index
     }
 ]);
 
