@@ -70,6 +70,8 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
 
             // set background color for the terminal
             terminalRef.current.style.backgroundColor = parsedTheme.background;
+        } else {
+            terminalRef.current.style.backgroundColor = defaultTheme.background as string;
         }
         resizeScreen();
 
