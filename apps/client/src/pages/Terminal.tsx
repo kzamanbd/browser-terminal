@@ -9,7 +9,15 @@ import { IXTerminal } from '@/utils/themes';
 import { ITheme } from '@xterm/xterm';
 import { useEffect, useState } from 'react';
 
-export default function XTerminal() {
+type SSHConnection = {
+    host: string;
+    port: string;
+    username: string;
+    key?: string;
+    password?: string;
+};
+
+export default function Terminal() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [input, setInput] = useState('root@203.188.245.58 -p 8886');
@@ -32,8 +40,8 @@ export default function XTerminal() {
             setIsLoading(false);
         });
         socket.on('title', (data: string) => {
-            window.document.title = data;
             setTitle(data);
+            window.document.title = data;
         });
 
         return () => {
@@ -42,31 +50,17 @@ export default function XTerminal() {
         };
     }, []);
 
-    const connectionAction = ({
-        host,
-        port,
-        username,
-        key,
-        password
-    }: {
-        host: string;
-        port: string;
-        username: string;
-        key?: string;
-        password?: string;
-    }) => {
+    const connectionAction = (config: SSHConnection) => {
         setIsLoading(true);
-        console.log('Connecting to SSH', { host, port, username, key, password });
-        if (!host || !port || !username || (!key && !password)) {
+        console.log('Connecting to SSH', config);
+        if (!config.host || !config.port || !config.username || (!config.key && !config.password)) {
             alert('Host, Port, and Username are required');
             return;
         }
         socket.emit('ssh', {
-            host: host,
-            port: port || 22,
-            username: username,
-            [key ? 'privateKey' : 'password']: key ? key : password,
-            password: password // or private key
+            ...config,
+            port: config.port || '22',
+            [config.key ? 'privateKey' : 'password']: config.key ? config.key : password
         });
     };
 
@@ -118,14 +112,11 @@ export default function XTerminal() {
 
     const closeModal = () => {
         setIsModal(false);
-        setPassword('');
-        setPrivateKey('');
-        setIsPrivateKey(false);
     };
 
     return (
-        <div className="h-full">
-            <div className="shadow-2xl subpixel-antialiased rounded h-full bg-black border-black mx-auto">
+        <div className="max-w-7xl mx-auto p-4 h-full">
+            <div className="subpixel-antialiased rounded h-full">
                 <div className="p-2 grid grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
                     <div className="relative flex gap-2">
                         <button type="button">File</button>

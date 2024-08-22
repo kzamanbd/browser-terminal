@@ -1,12 +1,12 @@
 import Index from './pages/Index';
-import XTerminal from './pages/XTerminal';
+import Terminal from './pages/Terminal';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        Component: XTerminal
+        Component: Terminal
     },
     {
         path: '/dashboard',
