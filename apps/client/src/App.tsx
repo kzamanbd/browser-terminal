@@ -1,4 +1,4 @@
-import Index from './pages/Index';
+import Dashboard from './pages/Dashboard';
 import Terminal from './pages/Terminal';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/dashboard',
-        Component: Index
+        Component: Dashboard
     }
 ]);
 
