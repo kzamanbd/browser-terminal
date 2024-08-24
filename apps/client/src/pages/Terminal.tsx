@@ -8,6 +8,7 @@ import socket from '@/utils/socket';
 import { IXTerminal } from '@/utils/themes';
 import { ITheme } from '@xterm/xterm';
 import { useEffect, useState } from 'react';
+import { MdFullscreen, MdOutlineAdd } from 'react-icons/md';
 
 type SSHConnection = {
     host: string;
@@ -123,18 +124,14 @@ export default function Terminal() {
                         <button type="button">Edit</button>
                         <button type="button">View</button>
                         <ThemesMenu changeTheme={themeChangeHandler} />
-                        <button type="button" onClick={toggleModal}>
-                            New Connection
-                        </button>
                         <button type="button">Help</button>
                     </div>
 
                     <p className="text-center text-sm">{title}</p>
 
                     <div className="flex ml-auto gap-2">
-                        <div className="border-green-900 bg-green-500 shadow-inner rounded-full w-3 h-3"></div>
-                        <div className="border-yellow-900 bg-yellow-500 shadow-inner rounded-full w-3 h-3"></div>
-                        <div className="flex items-center text-center border-red-900 bg-red-500 shadow-inner rounded-full w-3 h-3"></div>
+                        <MdOutlineAdd className="size-6 cursor-pointer" onClick={toggleModal} />
+                        <MdFullscreen className="size-6 cursor-pointer" />
                     </div>
                 </div>
                 <XTerminalUI loading={isLoading} theme={theme} />
