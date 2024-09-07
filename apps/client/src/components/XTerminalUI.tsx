@@ -139,7 +139,7 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         }
     }, [theme]);
 
-    return <div className="h-[calc(100%-100px)]" ref={terminalRef}></div>;
+    return <div className="h-full" ref={terminalRef}></div>;
 };
 
 export default XTerminalUI;

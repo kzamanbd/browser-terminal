@@ -117,17 +117,16 @@ export default function Terminal() {
 
     return (
         <div className="max-w-7xl mx-auto p-4 h-full">
-            <div className="subpixel-antialiased rounded h-full">
-                <div className="p-2 grid grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
-                    <div className="relative flex gap-2">
+            <div className="subpixel-antialiased rounded h-[calc(100%-100px)]">
+                <div className="p-2 grid grid-cols-2 md:grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
+                    <div className="relative hidden md:flex gap-2">
                         <button type="button">File</button>
-                        <button type="button">Edit</button>
-                        <button type="button">View</button>
+                        <button type="button">Terminal</button>
                         <ThemesMenu changeTheme={themeChangeHandler} />
                         <button type="button">Help</button>
                     </div>
 
-                    <p className="text-center text-sm">{title}</p>
+                    <p className="text-left md:text-center text-sm">{title}</p>
 
                     <div className="flex ml-auto gap-2">
                         <MdOutlineAdd className="size-6 cursor-pointer" onClick={toggleModal} />
