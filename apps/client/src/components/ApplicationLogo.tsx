@@ -7,4 +7,3 @@ export default function ApplicationLogo(props: SVGAttributes<SVGElement>) {
         </svg>
     );
 }
-

@@ -11,7 +11,7 @@ export default function AppLayout({ children, actions, title }: Props) {
     return (
         <div className="block sm:flex sm:gap-4 px-2.5 md:p-0 lg:p-0">
             <div className="text-right sm:hidden">
-                <button className="inline-flex items-center justify-center p-2 mb-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-white focus:text-gray-500 transition">
+                <button className="inline-flex items-center justify-center p-2 mb-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:bg-white focus:text-gray-500 transition">
                     <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path
                             className="inline-flex"
@@ -40,7 +40,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 group-[active]:dark:text-indigo-400 flex-shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -57,7 +57,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 group-[active]:dark:text-indigo-400 flex-shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -74,7 +74,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 group-[active]:dark:text-indigo-400 flex-shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -91,7 +91,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 group-[active]:dark:text-indigo-400 flex-shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -112,7 +112,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 group-[active]:dark:text-indigo-400 flex-shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -130,7 +130,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 group-[active]:dark:text-indigo-400 flex-shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -142,7 +142,7 @@ export default function AppLayout({ children, actions, title }: Props) {
             </div>
 
             <div className="w-full sm:w-3/4 sm:flex-1 border-gray-200 h-full ">
-                <div className="bg-white dark:bg-gray-800 sm:rounded-lg sm:shadow">
+                <div className="bg-white dark:bg-gray-800 sm:rounded-lg sm:shadow-sm">
                     <div className="border-b border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6">
                         <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
                             <div className="ml-4 mt-2">
@@ -150,7 +150,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                                     {title}
                                 </h3>
                             </div>
-                            <div className="ml-4 mt-2 flex-shrink-0">{actions && actions}</div>
+                            <div className="ml-4 mt-2 shrink-0">{actions && actions}</div>
                         </div>
                     </div>
                     <div className="overflow-x-auto md:overflow-auto lg:overflow-auto">
@@ -161,4 +161,3 @@ export default function AppLayout({ children, actions, title }: Props) {
         </div>
     );
 }
-

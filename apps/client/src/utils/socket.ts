@@ -1,6 +1,6 @@
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 
 const URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8081';
-const socket = io(URL);
+const socket: Socket = io(URL);
 
 export default socket;

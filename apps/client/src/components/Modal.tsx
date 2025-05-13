@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { PropsWithChildren } from 'react';
 
 export default function Modal({
     title,
@@ -43,7 +43,7 @@ export default function Modal({
                     leave="ease-in duration-200"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0">
-                    <div className="absolute inset-0 bg-gray-500/75" />
+                    <div className="absolute z-10 inset-0 bg-gray-500/75" />
                 </TransitionChild>
 
                 <TransitionChild
@@ -54,7 +54,7 @@ export default function Modal({
                     leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                     <DialogPanel
-                        className={`mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}>
+                        className={`mb-6 z-20 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}>
                         {title && (
                             <div className="px-4 py-2.5 bg-gray-50/50 text-lg font-semibold border-b">
                                 {title}

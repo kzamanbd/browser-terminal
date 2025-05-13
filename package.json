@@ -5,7 +5,7 @@
     "engines": {
         "node": ">=18"
     },
-    "packageManager": "pnpm@8.15.6",
+    "packageManager": "pnpm@10.10.0",
     "scripts": {
         "build": "turbo build",
         "dev": "turbo dev",
@@ -21,8 +21,6 @@
     "author": "Kamruzzaman",
     "license": "MIT",
     "devDependencies": {
-        "@repo/eslint-config": "workspace:*",
-        "@repo/typescript-config": "workspace:*",
         "prettier": "^3.3.3",
         "turbo": "^2.0.12",
         "typescript": "^5.5.4"

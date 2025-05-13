@@ -59,7 +59,6 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         xterm.loadAddon(unicode11Addon);
         xterm.unicode.activeVersion = '11';
         xterm.open(terminalRef.current);
-        xterm.writeln('Welcome to XTerminal');
         defaultInput();
 
         // set theme if available in local storage
@@ -139,7 +138,7 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         }
     }, [theme]);
 
-    return <div className="h-full" ref={terminalRef}></div>;
+    return <div className="h-full py-2" ref={terminalRef}></div>;
 };
 
 export default XTerminalUI;
