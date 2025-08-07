@@ -20,6 +20,7 @@ type TerminalProps = {
 
 const XTerminalUI = ({ loading, theme }: TerminalProps) => {
     const terminalRef = useRef({} as HTMLDivElement);
+    const promptLength = useRef(0);
 
     const xtermRef = useRef(
         new Terminal({
@@ -38,7 +39,10 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
     }, []);
 
     const defaultInput = () => {
-        xtermRef.current?.write('[root@kzaman ~]\x1b[31m$ \x1b[0m');
+        const prompt = '[root@kzaman ~]$ ';
+        const coloredPrompt = `[root@kzaman ~]\x1b[31m$ \x1b[0m`;
+        promptLength.current = prompt.length;
+        xtermRef.current?.write(coloredPrompt);
         xtermRef.current.focus();
     };
 
@@ -85,11 +89,15 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         const xterm = xtermRef.current;
         socket.on('ssh-output', (data) => {
             xterm.write(data);
+            // Reset prompt protection when receiving SSH output
+            promptLength.current = 0;
         });
 
         socket.on('ssh-ready', () => {
             xterm?.writeln('Successfully connected to server\r');
             xterm.focus();
+            // Reset prompt protection when connected to SSH
+            promptLength.current = 0;
         });
 
         socket.on('ssh-error', (err) => {
@@ -98,6 +106,18 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         });
 
         xterm.onData((data: string) => {
+            // Prevent backspace from deleting the prompt
+            if (data === '\x7f') {
+                // backspace character
+                const buffer = xterm.buffer.active;
+                const currentPos = buffer.cursorX;
+
+                // If cursor is at or before the prompt, don't allow backspace
+                if (currentPos <= promptLength.current) {
+                    return;
+                }
+            }
+
             socket.emit('ssh-input', data);
         });
 
