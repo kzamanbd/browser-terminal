@@ -9,9 +9,9 @@ type Props = {
 
 export default function AppLayout({ children, actions, title }: Props) {
     return (
-        <div className="block sm:flex sm:gap-4 px-2.5 md:p-0 lg:p-0">
+        <div className="block px-2.5 sm:flex sm:gap-4 md:p-0 lg:p-0">
             <div className="text-right sm:hidden">
-                <button className="inline-flex items-center justify-center p-2 mb-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:bg-white focus:text-gray-500 transition">
+                <button className="focus:outline-hidden mb-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-500 focus:bg-white focus:text-gray-500">
                     <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path
                             className="inline-flex"
@@ -29,7 +29,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                 </button>
             </div>
 
-            <div className="w-full sm:w-60 h-full mb-5 md:mb-0 lg:mb-0 sm:block hidden">
+            <div className="mb-5 hidden h-full w-full sm:block sm:w-60 md:mb-0 lg:mb-0">
                 <nav className="space-y-1" aria-label="Sidebar">
                     <LayoutLink to="/sites">
                         <svg
@@ -40,7 +40,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="-ml-1 mr-3 h-6 w-6 shrink-0 group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -57,7 +57,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="-ml-1 mr-3 h-6 w-6 shrink-0 group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -74,7 +74,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="-ml-1 mr-3 h-6 w-6 shrink-0 group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -91,7 +91,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="-ml-1 mr-3 h-6 w-6 shrink-0 group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -112,7 +112,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="-ml-1 mr-3 h-6 w-6 shrink-0 group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -130,7 +130,7 @@ export default function AppLayout({ children, actions, title }: Props) {
                             stroke="currentColor"
                             aria-hidden="true"
                             data-slot="icon"
-                            className="group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400 shrink-0 -ml-1 mr-3 h-6 w-6">
+                            className="-ml-1 mr-3 h-6 w-6 shrink-0 group-[active]:text-indigo-600 dark:group-[active]:text-indigo-400">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -141,9 +141,9 @@ export default function AppLayout({ children, actions, title }: Props) {
                 </nav>
             </div>
 
-            <div className="w-full sm:w-3/4 sm:flex-1 border-gray-200 h-full ">
-                <div className="bg-white dark:bg-gray-800 sm:rounded-lg sm:shadow-sm">
-                    <div className="border-b border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6">
+            <div className="h-full w-full border-gray-200 sm:w-3/4 sm:flex-1">
+                <div className="bg-white sm:rounded-lg sm:shadow-sm dark:bg-gray-800">
+                    <div className="border-b border-gray-200 px-4 py-5 sm:px-6 dark:border-gray-700">
                         <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
                             <div className="ml-4 mt-2">
                                 <h3 className="text-xl font-medium leading-6 text-gray-900 dark:text-gray-300">

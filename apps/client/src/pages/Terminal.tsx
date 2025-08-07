@@ -124,29 +124,29 @@ export default function Terminal() {
 
     return (
         <div className="h-screen">
-            <div className="subpixel-antialiased rounded-sm h-full">
-                <div className="p-2 grid grid-cols-2 md:grid-cols-3 items-center justify-between rounded-t bg-gray-200 border-b border-gray-500 text-center text-black">
-                    <div className="relative hidden md:flex gap-2">
+            <div className="h-full rounded-sm subpixel-antialiased">
+                <div className="grid grid-cols-2 items-center justify-between rounded-t border-b border-gray-500 bg-gray-200 p-2 text-center text-black md:grid-cols-3">
+                    <div className="relative hidden gap-2 md:flex">
                         <button type="button">File</button>
                         <button type="button">Terminal</button>
                         <ThemesMenu changeTheme={themeChangeHandler} />
                         <button type="button">Help</button>
                     </div>
 
-                    <div className="text-left md:text-center flex gap-1 items-center">
+                    <div className="flex items-center justify-center gap-1">
                         <p className="text-sm">{title}</p>
                         {socketId && (
                             <p className="text-xs text-gray-600">(Socket ID: {socketId})</p>
                         )}
                     </div>
 
-                    <div className="flex ml-auto gap-2">
+                    <div className="ml-auto flex gap-2">
                         <MdOutlineAdd className="size-6 cursor-pointer" onClick={toggleModal} />
                         <MdFullscreen className="size-6 cursor-pointer" />
                     </div>
                 </div>
                 {!socketId && (
-                    <div className="h-full flex items-center justify-center">
+                    <div className="flex h-full items-center justify-center">
                         <p className="text-gray-500">Connecting to server...</p>
                     </div>
                 )}
@@ -180,7 +180,7 @@ export default function Terminal() {
                                 id="public-key"
                                 name="public-key"
                                 onChange={handlePrivateKey}
-                                className="form-input bg-gray-100 rounded-md p-1.5 block w-full"
+                                className="form-input block w-full rounded-md bg-gray-100 p-1.5"
                             />
                         ) : (
                             <div className="relative">
@@ -195,7 +195,7 @@ export default function Terminal() {
                                 />
 
                                 <div
-                                    className="absolute inset-y-0 end-0 flex items-center pointer-events-none z-20 pe-4"
+                                    className="pointer-events-none absolute inset-y-0 end-0 z-20 flex items-center pe-4"
                                     onClick={() => setShowPassword(!showPassword)}>
                                     {showPassword ? (
                                         <svg
@@ -225,7 +225,7 @@ export default function Terminal() {
                     </div>
 
                     <label htmlFor="custom_switch" className="mt-2 flex items-center">
-                        <div className="relative h-6 w-12 m-0">
+                        <div className="relative m-0 h-6 w-12">
                             <input
                                 type="checkbox"
                                 id="custom_switch"
@@ -233,12 +233,12 @@ export default function Terminal() {
                                 onChange={(e) => setIsPrivateKey(e.target.checked)}
                                 className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
                             />
-                            <span className="block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before-bg-close before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:border-primary peer-checked:before:left-7 peer-checked:before:bg-primary peer-checked-before-bg"></span>
+                            <span className="before-bg-close peer-checked:border-primary peer-checked:before:bg-primary peer-checked-before-bg block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:before:left-7"></span>
                         </div>
                         <span className="mx-2">With Private Key</span>
                     </label>
 
-                    <div className="flex items-center mt-4 gap-3 justify-center">
+                    <div className="mt-4 flex items-center justify-center gap-3">
                         <Button className="mr-2" type="button" onClick={closeModal}>
                             Cancel
                         </Button>

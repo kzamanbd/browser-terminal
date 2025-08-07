@@ -21,16 +21,16 @@ export default function ThemesMenu({ changeTheme }: ThemeProps) {
             <MenuItems
                 transition
                 anchor="bottom"
-                className="w-52 z-50 origin-top-right custom-scrollbar rounded-xl h-52 overflow-y-auto border border-white/5 bg-white p-1 text-sm/6 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-hidden data-closed:scale-95 data-closed:opacity-0">
+                className="custom-scrollbar focus:outline-hidden data-closed:scale-95 data-closed:opacity-0 z-50 h-52 w-52 origin-top-right overflow-y-auto rounded-xl border border-white/5 bg-white p-1 text-sm/6 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)]">
                 {themes.map((theme) => (
                     <MenuItem key={theme.name}>
                         <button
                             onClick={() => changeTheme(theme)}
-                            className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-focus:bg-white/10 ${
+                            className={`data-focus:bg-white/10 group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 ${
                                 currentTheme(theme) ? 'bg-gray-300' : ''
                             }`}>
                             {theme.name}
-                            <kbd className="ml-auto hidden font-sans text-xs group-data-focus:inline">
+                            <kbd className="group-data-focus:inline ml-auto hidden font-sans text-xs">
                                 ⌘ {theme.name[0].toUpperCase()}
                             </kbd>
                         </button>

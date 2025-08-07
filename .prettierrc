@@ -7,5 +7,7 @@
     "trailingComma": "none",
     "bracketSameLine": true,
     "endOfLine": "crlf",
-    "vueIndentScriptAndStyle": true
+    "vueIndentScriptAndStyle": true,
+    "plugins": ["prettier-plugin-tailwindcss"]
 }
+
