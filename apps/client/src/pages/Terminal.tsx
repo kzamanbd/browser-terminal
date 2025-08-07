@@ -30,6 +30,7 @@ export default function Terminal() {
 
     const [title, setTitle] = useState('Terminal');
     const [theme, setTheme] = useState({} as ITheme);
+    const [socketId, setSocketId] = useState<string>('');
 
     const themeChangeHandler = ({ theme }: IXTerminal) => {
         setTheme(theme);
@@ -37,6 +38,10 @@ export default function Terminal() {
     };
 
     useEffect(() => {
+        socket.on('connect', () => {
+            setSocketId(socket.id || '');
+        });
+
         socket.on('ssh-ready', () => {
             setIsLoading(false);
         });
@@ -46,6 +51,7 @@ export default function Terminal() {
         });
 
         return () => {
+            socket.off('connect');
             socket.off('ssh-ready');
             socket.off('title');
         };
@@ -56,6 +62,7 @@ export default function Terminal() {
         console.log('Connecting to SSH', config);
         if (!config.host || !config.port || !config.username || (!config.key && !config.password)) {
             alert('Host, Port, and Username are required');
+            setIsLoading(false);
             return;
         }
         socket.emit('ssh', {
@@ -126,13 +133,23 @@ export default function Terminal() {
                         <button type="button">Help</button>
                     </div>
 
-                    <p className="text-left md:text-center text-sm">{title}</p>
+                    <div className="text-left md:text-center flex gap-1 items-center">
+                        <p className="text-sm">{title}</p>
+                        {socketId && (
+                            <p className="text-xs text-gray-600">(Socket ID: {socketId})</p>
+                        )}
+                    </div>
 
                     <div className="flex ml-auto gap-2">
                         <MdOutlineAdd className="size-6 cursor-pointer" onClick={toggleModal} />
                         <MdFullscreen className="size-6 cursor-pointer" />
                     </div>
                 </div>
+                {!socketId && (
+                    <div className="h-full flex items-center justify-center">
+                        <p className="text-gray-500">Connecting to server...</p>
+                    </div>
+                )}
                 <XTerminalUI loading={isLoading} theme={theme} />
             </div>
 
