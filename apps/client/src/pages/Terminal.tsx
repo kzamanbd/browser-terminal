@@ -1,9 +1,9 @@
 import Button from '@/components/button';
 import InputLabel from '@/components/input-label';
 import Modal from '@/components/modal';
-import XTerminalUI from '@/components/terminal-ui';
 import TextInput from '@/components/text-input';
 import ThemesMenu from '@/components/themes-menu';
+import XTerminalUI from '@/components/x-terminal';
 import socket from '@/utils/socket';
 import { IXTerminal } from '@/utils/themes';
 import { ITheme } from '@xterm/xterm';

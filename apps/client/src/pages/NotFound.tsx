@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 
 export default function NotFound() {
     const [displayText, setDisplayText] = useState('');
