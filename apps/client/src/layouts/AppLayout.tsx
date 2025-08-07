@@ -1,4 +1,4 @@
-import LayoutLink from '@/components/LayoutLink';
+import LayoutLink from '@/components/layout-link';
 
 type Props = {
     children?: React.ReactNode;
