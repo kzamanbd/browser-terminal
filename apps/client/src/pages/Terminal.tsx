@@ -4,123 +4,24 @@ import Modal from '@/components/modal';
 import TextInput from '@/components/text-input';
 import ThemesMenu from '@/components/themes-menu';
 import XTerminalUI from '@/components/x-terminal';
-import socket from '@/utils/socket';
-import { IXTerminal } from '@/utils/themes';
-import { ITheme } from '@xterm/xterm';
-import { useEffect, useState } from 'react';
+import useTerminal from '@/hooks/use-terminal';
+
 import { MdFullscreen, MdOutlineAdd } from 'react-icons/md';
 
-type SSHConnection = {
-    host: string;
-    port: string;
-    username: string;
-    key?: string;
-    password?: string;
-};
-
 export default function Terminal() {
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [input, setInput] = useState('root@203.188.245.58 -p 8886');
-    const [isModal, setIsModal] = useState(false);
-    const [password, setPassword] = useState(import.meta.env.VITE_SSH_PASSWORD as string);
-    const [isPrivateKey, setIsPrivateKey] = useState(false);
-    const [privateKey, setPrivateKey] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-
-    const [title, setTitle] = useState('Terminal');
-    const [theme, setTheme] = useState({} as ITheme);
-    const [socketId, setSocketId] = useState<string>('');
-
-    const themeChangeHandler = ({ theme }: IXTerminal) => {
-        setTheme(theme);
-        localStorage.setItem('theme', JSON.stringify(theme));
-    };
-
-    useEffect(() => {
-        socket.on('connect', () => {
-            setSocketId(socket.id || '');
-        });
-
-        socket.on('ssh-ready', () => {
-            setIsLoading(false);
-        });
-        socket.on('title', (data: string) => {
-            setTitle(data);
-            window.document.title = data;
-        });
-
-        return () => {
-            socket.off('connect');
-            socket.off('ssh-ready');
-            socket.off('title');
-        };
-    }, []);
-
-    const connectionAction = (config: SSHConnection) => {
-        setIsLoading(true);
-        console.log('Connecting to SSH', config);
-        if (!config.host || !config.port || !config.username || (!config.key && !config.password)) {
-            alert('Host, Port, and Username are required');
-            setIsLoading(false);
-            return;
-        }
-        socket.emit('ssh', {
-            ...config,
-            port: config.port || '22',
-            [config.key ? 'privateKey' : 'password']: config.key ? config.key : password
-        });
-    };
-
-    const connectSSH = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!input) {
-            alert('Host is required');
-            return;
-        }
-        // extract host, port, username, password from input
-        const username = input.split('@')[0];
-        const host = input.split('@')[1]?.split('-p')[0]?.trim();
-        const port = input.split('@')[1]?.split('-p')[1]?.trim();
-        if (!username || !host) {
-            alert('Invalid input format, expected: username@host -p port');
-            return;
-        }
-
-        if (!password && !isPrivateKey) {
-            alert('Password required');
-            return;
-        }
-        connectionAction({ host, port, username, key: isPrivateKey ? privateKey : '', password });
-        toggleModal();
-    };
-
-    const toggleModal = () => {
-        setIsModal(!isModal);
-    };
-
-    const handlePrivateKey = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) {
-            alert('Please select a file first');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            setPrivateKey(event.target?.result as string);
-        };
-
-        reader.onerror = function (event) {
-            console.error('Error reading file:', event.target?.error);
-        };
-
-        reader.readAsText(file);
-    };
-
-    const closeModal = () => {
-        setIsModal(false);
-    };
+    const {
+        isLoading,
+        terminalState,
+        formState,
+        isModal,
+        toggleModal,
+        themeHandler,
+        connectSSH,
+        formHandler,
+        handlePrivateKey,
+        toggleShowPassword,
+        closeModal
+    } = useTerminal();
 
     return (
         <div className="h-screen">
@@ -129,14 +30,14 @@ export default function Terminal() {
                     <div className="relative hidden gap-2 md:flex">
                         <button type="button">File</button>
                         <button type="button">Terminal</button>
-                        <ThemesMenu changeTheme={themeChangeHandler} />
+                        <ThemesMenu changeTheme={themeHandler} />
                         <button type="button">Help</button>
                     </div>
 
                     <div className="flex items-center justify-center gap-1">
-                        <p className="text-sm">{title}</p>
-                        {socketId && (
-                            <p className="text-xs text-gray-600">(Socket ID: {socketId})</p>
+                        <p className="text-sm">{terminalState.title}</p>
+                        {terminalState.id && (
+                            <p className="text-xs text-gray-600">(Socket ID: {terminalState.id})</p>
                         )}
                     </div>
 
@@ -145,27 +46,27 @@ export default function Terminal() {
                         <MdFullscreen className="size-6 cursor-pointer" />
                     </div>
                 </div>
-                {!socketId && (
+                {!terminalState.id && (
                     <div className="flex h-full items-center justify-center">
                         <p className="text-gray-500">Connecting to server...</p>
                     </div>
                 )}
-                <XTerminalUI loading={isLoading} theme={theme} />
+                <XTerminalUI loading={isLoading} theme={terminalState.theme} />
             </div>
 
             <Modal show={isModal} maxWidth="md" onClose={closeModal}>
                 <form onSubmit={connectSSH}>
                     <div>
-                        <InputLabel htmlFor="name" value="Host" />
+                        <InputLabel htmlFor="input" value="Host" />
 
                         <TextInput
-                            id="name"
-                            name="name"
+                            id="input"
+                            name="input"
                             type="search"
-                            value={input}
+                            value={formState.input}
                             className="mt-1 block w-full"
                             autoComplete="name"
-                            onChange={(e) => setInput(e.target.value)}
+                            onChange={formHandler}
                             isFocused
                             required
                             placeholder="root@127.0.0.1 -p 22"
@@ -173,12 +74,12 @@ export default function Terminal() {
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel htmlFor="public-key" value="Private Key" />
-                        {isPrivateKey ? (
+                        <InputLabel htmlFor="privateKey" value="Private Key" />
+                        {formState.hasKey ? (
                             <input
                                 type="file"
-                                id="public-key"
-                                name="public-key"
+                                id="privateKey"
+                                name="privateKey"
                                 onChange={handlePrivateKey}
                                 className="form-input block w-full rounded-md bg-gray-100 p-1.5"
                             />
@@ -187,17 +88,18 @@ export default function Terminal() {
                                 <TextInput
                                     id="password"
                                     name="password"
-                                    value={password}
-                                    type={showPassword ? 'text' : 'password'}
+                                    value={formState.password}
+                                    type={formState.showPassword ? 'text' : 'password'}
                                     className="mt-1 block w-full"
                                     placeholder="*********"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={formHandler}
                                 />
 
-                                <div
-                                    className="pointer-events-none absolute inset-y-0 end-0 z-20 flex items-center pe-4"
-                                    onClick={() => setShowPassword(!showPassword)}>
-                                    {showPassword ? (
+                                <button
+                                    onClick={toggleShowPassword}
+                                    type="button"
+                                    className="absolute inset-y-0 end-0 z-20 flex items-center pe-4">
+                                    {formState.showPassword ? (
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="16"
@@ -219,7 +121,7 @@ export default function Terminal() {
                                             <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
                                         </svg>
                                     )}
-                                </div>
+                                </button>
                             </div>
                         )}
                     </div>
@@ -229,8 +131,9 @@ export default function Terminal() {
                             <input
                                 type="checkbox"
                                 id="custom_switch"
-                                checked={isPrivateKey}
-                                onChange={(e) => setIsPrivateKey(e.target.checked)}
+                                name="hasKey"
+                                checked={formState.hasKey}
+                                onChange={formHandler}
                                 className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
                             />
                             <span className="before-bg-close peer-checked:border-primary peer-checked:before:bg-primary peer-checked-before-bg block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:before:left-7"></span>
