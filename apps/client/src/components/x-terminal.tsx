@@ -19,7 +19,7 @@ type TerminalProps = {
 };
 
 const XTerminalUI = ({ loading, theme }: TerminalProps) => {
-    const terminalRef = useRef({} as HTMLDivElement);
+    const terminalRef = useRef<HTMLDivElement | null>(null);
     const promptLength = useRef(0);
 
     const xtermRef = useRef(
@@ -38,12 +38,72 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         console.log(`resize: ${JSON.stringify({ cols: xterm.cols, rows: xterm.rows })}`);
     }, []);
 
-    const defaultInput = () => {
+    const defaultInput = (shouldUpdateTheme = false) => {
         const prompt = '[root@kzaman ~]$ ';
         const coloredPrompt = `[root@kzaman ~]\x1b[31m$ \x1b[0m`;
         promptLength.current = prompt.length;
-        xtermRef.current?.write(coloredPrompt);
+        xtermRef.current.write(coloredPrompt);
         xtermRef.current.focus();
+
+        if (!shouldUpdateTheme || !terminalRef.current) {
+            return;
+        }
+
+        // set theme if available in local storage
+        const savedTheme = JSON.parse(localStorage.getItem('theme') || '{}');
+        if (savedTheme) {
+            xtermRef.current.options.theme = savedTheme;
+            // set background color for the terminal
+            terminalRef.current.style.backgroundColor = savedTheme.background;
+            return;
+        }
+        terminalRef.current.style.backgroundColor = defaultTheme.background as string;
+    };
+
+    const sshInputHandler = (data: string) => {
+        // Prevent backspace from deleting the prompt
+        if (data === '\x7f') {
+            // backspace character
+            const buffer = xtermRef.current.buffer.active;
+            const currentPos = buffer.cursorX;
+
+            // If cursor is at or before the prompt, don't allow backspace
+            if (currentPos <= promptLength.current) {
+                return;
+            }
+        }
+
+        socket.emit('ssh-input', data);
+    };
+
+    const sshOutputHandler = (data: string) => {
+        xtermRef.current.write(data);
+        // Reset prompt protection when receiving SSH output
+        promptLength.current = 0;
+    };
+
+    const sshReadyHandler = () => {
+        xtermRef.current.writeln('Successfully connected to server\r');
+        xtermRef.current.focus();
+        // Reset prompt protection when connected to SSH
+        promptLength.current = 0;
+    };
+
+    const sshErrorHandler = (err: string) => {
+        console.error('SSH Error:', err);
+        xtermRef.current.writeln(`Error: ${err}\r`);
+    };
+
+    const noConnectionOutputHandler = () => {
+        xtermRef.current.writeln(
+            '\r\nCommand not found! Please check the command and try again.\r'
+        );
+        defaultInput();
+    };
+
+    const onCloseHandler = () => {
+        xtermRef.current.writeln('Connection closed\r');
+        defaultInput();
     };
 
     /**
@@ -55,7 +115,11 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
      * Listen for theme change event
      */
 
-    useEffect(() => {
+    const initTerminal = () => {
+        if (!terminalRef.current) {
+            console.error('Terminal container is not available');
+            return;
+        }
         const xterm = xtermRef.current;
         xterm.loadAddon(fitAddon);
         xterm.loadAddon(searchAddon);
@@ -63,81 +127,34 @@ const XTerminalUI = ({ loading, theme }: TerminalProps) => {
         xterm.loadAddon(unicode11Addon);
         xterm.unicode.activeVersion = '11';
         xterm.open(terminalRef.current);
-        defaultInput();
 
-        // set theme if available in local storage
-        const theme = localStorage.getItem('theme');
-        if (theme) {
-            const parsedTheme = JSON.parse(theme);
-            xterm.options.theme = parsedTheme;
-
-            // set background color for the terminal
-            terminalRef.current.style.backgroundColor = parsedTheme.background;
-        } else {
-            terminalRef.current.style.backgroundColor = defaultTheme.background as string;
-        }
         resizeScreen();
+        defaultInput(true);
+        socket.on('ssh-output', sshOutputHandler);
+        socket.on('ssh-ready', sshReadyHandler);
+        socket.on('ssh-error', sshErrorHandler);
+        socket.on('no-connection-output', noConnectionOutputHandler);
+        socket.on('ssh-close', onCloseHandler);
+        xterm.onData(sshInputHandler);
+    };
 
+    useEffect(() => {
         window.addEventListener('resize', resizeScreen, false);
-
         return () => {
             window.removeEventListener('resize', resizeScreen);
         };
-    }, [resizeScreen]);
+    }, []);
 
     useEffect(() => {
-        const xterm = xtermRef.current;
-        socket.on('ssh-output', (data) => {
-            xterm.write(data);
-            // Reset prompt protection when receiving SSH output
-            promptLength.current = 0;
-        });
-
-        socket.on('ssh-ready', () => {
-            xterm?.writeln('Successfully connected to server\r');
-            xterm.focus();
-            // Reset prompt protection when connected to SSH
-            promptLength.current = 0;
-        });
-
-        socket.on('ssh-error', (err) => {
-            console.error('SSH Error:', err);
-            xterm?.writeln(`Error: ${err}\r`);
-        });
-
-        xterm.onData((data: string) => {
-            // Prevent backspace from deleting the prompt
-            if (data === '\x7f') {
-                // backspace character
-                const buffer = xterm.buffer.active;
-                const currentPos = buffer.cursorX;
-
-                // If cursor is at or before the prompt, don't allow backspace
-                if (currentPos <= promptLength.current) {
-                    return;
-                }
-            }
-
-            socket.emit('ssh-input', data);
-        });
-
-        socket.on('no-connection-output', () => {
-            xterm?.writeln('\r\nCommand not found! Please check the command and try again.\r');
-            defaultInput();
-        });
-
-        socket.on('ssh-close', () => {
-            xterm.writeln('Connection closed\r');
-            defaultInput();
-        });
+        initTerminal();
 
         return () => {
-            socket.off('ssh-output');
-            socket.off('ssh-ready');
-            socket.off('ssh-error');
-            socket.off('resize');
-            socket.off('ssh-close');
-            socket.off('no-connection-output');
+            socket.off('ssh-output', sshOutputHandler);
+            socket.off('ssh-ready', sshReadyHandler);
+            socket.off('ssh-error', sshErrorHandler);
+            socket.off('resize', resizeScreen);
+            socket.off('ssh-close', onCloseHandler);
+            socket.off('no-connection-output', noConnectionOutputHandler);
         };
     }, []);
 

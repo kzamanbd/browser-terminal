@@ -1,21 +1,14 @@
+import { FormState, SSHConnection } from '@/types';
 import socket from '@/utils/socket';
-import { IXTerminal } from '@/utils/themes';
+import { IXTerminal, defaultTheme } from '@/utils/themes';
 import { ITheme } from '@xterm/xterm';
 import { useEffect, useState } from 'react';
-
-type SSHConnection = {
-    host: string;
-    port: string;
-    username: string;
-    key?: string;
-    password?: string;
-};
 
 export default function useTerminal() {
     const [isLoading, setIsLoading] = useState(false);
     const [isModal, setIsModal] = useState(false);
 
-    const [formState, setFormState] = useState({
+    const [formState, setFormState] = useState<FormState>({
         password: import.meta.env.VITE_SSH_PASSWORD as string,
         privateKey: '',
         hasKey: false,
@@ -23,11 +16,12 @@ export default function useTerminal() {
         input: 'root@203.188.245.58 -p 8886'
     });
 
+    // Backward compatibility - original terminalState
     const [terminalState, setTerminalState] = useState({
         id: '',
         title: 'Terminal',
         status: 'disconnected',
-        theme: {} as ITheme
+        theme: defaultTheme as ITheme
     });
 
     useEffect(() => {

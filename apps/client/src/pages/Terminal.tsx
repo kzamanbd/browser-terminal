@@ -130,13 +130,12 @@ export default function Terminal() {
                         <div className="relative m-0 h-6 w-12">
                             <input
                                 type="checkbox"
-                                id="custom_switch"
                                 name="hasKey"
                                 checked={formState.hasKey}
                                 onChange={formHandler}
-                                className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
+                                className="peer absolute z-10 h-full w-full cursor-pointer opacity-0"
                             />
-                            <span className="before-bg-close peer-checked:border-primary peer-checked:before:bg-primary peer-checked-before-bg block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:before:left-7"></span>
+                            <span className="peer-checked:border-primary peer-checked:before:bg-primary peer-checked-before-bg block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:before:left-7"></span>
                         </div>
                         <span className="mx-2">With Private Key</span>
                     </label>
