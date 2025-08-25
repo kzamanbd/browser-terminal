@@ -2,13 +2,8 @@ name: Build and Push Docker Images
 
 on:
     push:
-        branches:
-            - master
         tags:
             - 'v*'
-    pull_request:
-        branches:
-            - master
 
 env:
     DOCKER_HUB_USERNAME: kzamanbd
