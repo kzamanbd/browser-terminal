@@ -5,7 +5,7 @@ services:
             context: .
             dockerfile: apps/api/Dockerfile
             target: development
-        container_name: browser-terminal-api
+        container_name: web-terminal-api
         restart: unless-stopped
         ports:
             - '8081:8081'
@@ -31,7 +31,7 @@ services:
             context: .
             dockerfile: apps/client/Dockerfile
             target: development
-        container_name: browser-terminal-client
+        container_name: web-terminal-client
         restart: unless-stopped
         ports:
             - '5173:5173'
@@ -52,7 +52,7 @@ services:
     # Production Nginx Reverse Proxy
     nginx:
         image: nginx:alpine
-        container_name: browser-terminal-nginx
+        container_name: web-terminal-nginx
         restart: unless-stopped
         ports:
             - '8000:80'
