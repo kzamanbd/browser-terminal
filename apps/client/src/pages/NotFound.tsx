@@ -41,7 +41,7 @@ export default function NotFound() {
                     {/* Terminal Content */}
                     <div className="p-6 font-mono text-sm">
                         <div className="mb-2 text-green-400">
-                            user@browser-terminal:~${' '}
+                            user@web-terminal:~${' '}
                             <span className="text-white">cd /requested-page</span>
                         </div>
                         <div className="mb-4 text-red-400">
