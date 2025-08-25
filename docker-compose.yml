@@ -1,28 +1,73 @@
 services:
-    # Express App
-    browser-terminal:
-        build: .
-        networks:
-            - express-network
+    # API Service
+    api:
+        build:
+            context: .
+            dockerfile: apps/api/Dockerfile
+            target: development
+        container_name: browser-terminal-api
+        restart: unless-stopped
+        ports:
+            - '8081:8081'
         volumes:
-            - ./:/app # if Read only mode sue :ro
-            - /app/node_modules # node_modules will be created in the container
+            # Mount source code for hot reload
+            - ./apps/api:/app/apps/api
+            # Exclude node_modules from host
+            - /app/node_modules
+            - /app/apps/api/node_modules
+        networks:
+            - app-network
+        environment:
+            - NODE_ENV=development
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:8081/health']
+            interval: 30s
+            timeout: 10s
+            retries: 3
 
-    # Nginx Server
-    nginx-server:
+    # Client Service
+    client:
+        build:
+            context: .
+            dockerfile: apps/client/Dockerfile
+            target: development
+        container_name: browser-terminal-client
+        restart: unless-stopped
+        ports:
+            - '5173:5173'
+        volumes:
+            # Mount source code for hot reload
+            - ./apps/client:/app/apps/client
+            # Exclude node_modules from host
+            - /app/node_modules
+            - /app/apps/client/node_modules
+        networks:
+            - app-network
+        environment:
+            - NODE_ENV=development
+            - VITE_API_URL=http://api:8081
+        depends_on:
+            - api
+
+    # Production Nginx Reverse Proxy
+    nginx:
         image: nginx:alpine
-        container_name: nginx-server
+        container_name: browser-terminal-nginx
         restart: unless-stopped
         ports:
             - '8000:80'
         volumes:
             - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
         networks:
-            - express-network
+            - app-network
         depends_on:
-            - browser-terminal
+            - api
+            - client
+        profiles:
+            - production
 
 # Networks
 networks:
-    express-network:
+    app-network:
         driver: bridge
+
