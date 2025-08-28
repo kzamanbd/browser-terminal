@@ -23,24 +23,26 @@ build_and_push() {
     local dockerfile_path=$2
     local image_name="${DOCKER_HUB_USERNAME}/${PROJECT_NAME}-${service}"
     
-    echo -e "${YELLOW}Building ${service} image...${NC}"
+    echo -e "${YELLOW}Building ${service} image for multiple platforms...${NC}"
     
-    # Build the image
-    docker build \
+    # Create and use buildx builder if not exists
+    if ! docker buildx ls | grep -q "multiplatform-builder"; then
+        docker buildx create --name multiplatform-builder --use
+    else
+        docker buildx use multiplatform-builder
+    fi
+    
+    # Build and push multi-platform image
+    docker buildx build \
         --file ${dockerfile_path} \
         --target production \
+        --platform linux/amd64,linux/arm64 \
         --tag ${image_name}:${VERSION} \
         --tag ${image_name}:latest \
+        --push \
         .
     
-    echo -e "${GREEN}✅ Successfully built ${image_name}:${VERSION}${NC}"
-    
-    # Push the image
-    echo -e "${YELLOW}Pushing ${service} image to Docker Hub...${NC}"
-    docker push ${image_name}:${VERSION}
-    docker push ${image_name}:latest
-    
-    echo -e "${GREEN}✅ Successfully pushed ${image_name}${NC}"
+    echo -e "${GREEN}✅ Successfully built and pushed ${image_name} for multiple platforms${NC}"
 }
 
 # Check if Docker is running
