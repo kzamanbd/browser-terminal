@@ -12,9 +12,8 @@
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx}\"",
         "docker:build": "./scripts/docker-build-push.sh",
-        "docker:deploy": "./scripts/deploy-prod.sh",
-        "up": "docker-compose up --build",
-        "down": "docker-compose down"
+        "docker:up": "docker-compose up -d --build",
+        "docker:down": "docker-compose down"
     },
     "keywords": [
         "react",
@@ -27,7 +26,7 @@
     "devDependencies": {
         "prettier": "^3.6.2",
         "prettier-plugin-tailwindcss": "^0.6.14",
-        "turbo": "^2.5.5",
+        "turbo": "^2.5.8",
         "typescript": "^5.9.2"
     }
 }

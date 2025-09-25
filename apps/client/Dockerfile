@@ -21,6 +21,8 @@ RUN pnpm install --frozen-lockfile
 FROM base AS development
 WORKDIR /app
 COPY . .
+# Ensure all dependencies are installed including dev dependencies
+RUN pnpm install --frozen-lockfile
 EXPOSE 5173
 CMD ["pnpm", "--filter", "ssh-client", "dev", "--host", "0.0.0.0"]
 

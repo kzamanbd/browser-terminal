@@ -1,8 +1,8 @@
 # Multi-stage build for API
 FROM node:22-alpine AS base
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm and curl for healthcheck
+RUN npm install -g pnpm && apk add --no-cache curl
 
 WORKDIR /app
 
@@ -21,6 +21,8 @@ RUN pnpm install --frozen-lockfile
 FROM base AS development
 WORKDIR /app
 COPY . .
+# Ensure all dependencies are installed including dev dependencies
+RUN pnpm install --frozen-lockfile
 EXPOSE 8081
 CMD ["pnpm", "--filter", "ssh-api", "dev"]
 

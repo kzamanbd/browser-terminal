@@ -11,9 +11,11 @@ services:
         volumes:
             # Mount source code for hot reload
             - ./apps/api:/app/apps/api
-            # Exclude node_modules from host
+            # Exclude node_modules from host to use container's installed modules
             - /app/node_modules
             - /app/apps/api/node_modules
+            # Mount pnpm store for better performance
+            - pnpm_store_api:/root/.local/share/pnpm/store
         networks:
             - app-network
         environment:
@@ -36,9 +38,11 @@ services:
         volumes:
             # Mount source code for hot reload
             - ./apps/client:/app/apps/client
-            # Exclude node_modules from host
+            # Exclude node_modules from host to use container's installed modules
             - /app/node_modules
             - /app/apps/client/node_modules
+            # Mount pnpm store for better performance
+            - pnpm_store_client:/root/.local/share/pnpm/store
         networks:
             - app-network
         environment:
@@ -68,4 +72,9 @@ services:
 networks:
     app-network:
         driver: bridge
+
+# Volumes
+volumes:
+    pnpm_store_api:
+    pnpm_store_client:
 
