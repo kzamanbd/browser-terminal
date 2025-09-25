@@ -1,21 +1,19 @@
-name: Build and Push Docker Images
+name: Build and Push Single Docker Image
 
 on:
     push:
         tags:
             - 'v*'
+        branches:
+            - master
 
 env:
     DOCKER_HUB_USERNAME: kzamanbd
-    PROJECT_NAME: web-terminal
+    PROJECT_NAME: terminal
 
 jobs:
     build-and-push:
         runs-on: ubuntu-latest
-
-        strategy:
-            matrix:
-                service: [api, client]
 
         steps:
             - name: Checkout code
@@ -31,36 +29,26 @@ jobs:
                   username: ${{ env.DOCKER_HUB_USERNAME }}
                   password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-            - name: Extract metadata
+            - name: Extract metadata (tags, labels)
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.PROJECT_NAME }}-${{ matrix.service }}
+                  images: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.PROJECT_NAME }}
                   tags: |
                       type=ref,event=branch
-                      type=ref,event=pr
                       type=semver,pattern={{version}}
                       type=semver,pattern={{major}}.{{minor}}
                       type=raw,value=latest,enable={{is_default_branch}}
 
-            - name: Build and push Docker image
+            - name: Build and push (multi-platform)
               uses: docker/build-push-action@v5
               with:
                   context: .
-                  file: ./apps/${{ matrix.service }}/Dockerfile
-                  target: production
+                  file: ./Dockerfile
                   push: ${{ github.event_name != 'pull_request' }}
+                  platforms: linux/amd64,linux/arm64
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
-
-            - name: Update Docker Hub description
-              if: github.event_name != 'pull_request' && matrix.service == 'api'
-              uses: peter-evans/dockerhub-description@v4
-              with:
-                  username: ${{ env.DOCKER_HUB_USERNAME }}
-                  password: ${{ secrets.DOCKER_HUB_TOKEN }}
-                  repository: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.PROJECT_NAME }}-${{ matrix.service }}
-                  short-description: 'Browser Terminal ${{ matrix.service }} - A web-based SSH terminal'
 
