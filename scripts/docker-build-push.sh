@@ -7,7 +7,6 @@ set -e
 DOCKER_HUB_USERNAME="kzamanbd"
 PROJECT_NAME="terminal"
 VERSION=${1:-"latest"}
-MULTI_PLATFORM=${2:-"true"}  # Set to "false" for faster single-platform builds
 
 # Colors for output
 RED='\033[0;31m'
@@ -22,48 +21,22 @@ echo -e "${YELLOW}Version: ${VERSION}${NC}"
 build_and_push() {
     local image_name="${DOCKER_HUB_USERNAME}/${PROJECT_NAME}"
 
-    if [ "$MULTI_PLATFORM" = "true" ]; then
-        echo -e "${YELLOW}Building single image (client + api) for multiple platforms...${NC}"
-        
-        # Use default builder or create a local one (faster than pulling buildx)
-        if ! docker buildx ls | grep -q "multiplatform-builder"; then
-            echo -e "${YELLOW}Creating local multiplatform builder...${NC}"
-            docker buildx create --name multiplatform-builder --driver docker-container --use
-        else
-            docker buildx use multiplatform-builder
-        fi
+    echo -e "${YELLOW}Building single image (client + api) for current platform only (faster)...${NC}"
+    
+    # Use default docker builder for single platform (much faster)
+    docker build \
+        --file Dockerfile \
+        --tag ${image_name}:${VERSION} \
+        --tag ${image_name}:latest \
+        --progress=plain \
+        .
 
-        # Build and push multi-platform image from root Dockerfile
-        echo -e "${YELLOW}Starting multi-platform build with cache optimization...${NC}"
-        docker buildx build \
-            --file Dockerfile \
-            --platform linux/amd64,linux/arm64 \
-            --cache-from type=registry,ref=${image_name}:buildcache \
-            --cache-to type=registry,ref=${image_name}:buildcache,mode=max \
-            --tag ${image_name}:${VERSION} \
-            --tag ${image_name}:latest \
-            --push \
-            --progress=plain \
-            .
+    echo -e "${YELLOW}Pushing to Docker Hub...${NC}"
+    docker push ${image_name}:${VERSION}
+    docker push ${image_name}:latest
 
-        echo -e "${GREEN}✅ Successfully built and pushed ${image_name} for multiple platforms${NC}"
-    else
-        echo -e "${YELLOW}Building single image (client + api) for current platform only (faster)...${NC}"
-        
-        # Use default docker builder for single platform (much faster)
-        docker build \
-            --file Dockerfile \
-            --tag ${image_name}:${VERSION} \
-            --tag ${image_name}:latest \
-            --progress=plain \
-            .
-
-        echo -e "${YELLOW}Pushing to Docker Hub...${NC}"
-        docker push ${image_name}:${VERSION}
-        docker push ${image_name}:latest
-
-        echo -e "${GREEN}✅ Successfully built and pushed ${image_name} for current platform${NC}"
-    fi
+    echo -e "${GREEN}✅ Successfully built and pushed ${image_name} for current platform${NC}"
+    
 }
 
 # Check if Docker is running
