@@ -33,11 +33,11 @@ A modern, full-stack web-based SSH terminal client that enables secure connectio
 
 ```bash
 # Run the complete application with a single command
-docker run -p 8080:80 -p 8082:8081 kzamanbd/terminal:latest
+docker run -p 8080:80 -p 8081:8081 kzamanbd/terminal:latest
 ```
 
 - **Client Application**: `http://localhost:8080`
-- **API Server**: `http://localhost:8082`
+- **API Server**: `http://localhost:8081`
 - **Health Check**: `http://localhost:8080/health`
 
 ### Local Development
@@ -146,7 +146,7 @@ docker run -d \
 docker run -d \
   --name browser-terminal \
   -p 8080:80 \
-  -p 8082:8081 \
+  -p 8081:8081 \
   kzamanbd/terminal:latest
 ```
 
@@ -310,7 +310,7 @@ curl http://localhost/health
    lsof -i :8081
    
    # Use different ports
-   docker run -p 8080:80 -p 8082:8081 kzamanbd/terminal:latest
+   docker run -p 8080:80 -p 8081:8081 kzamanbd/terminal:latest
    ```
 
 2. **Container Won't Start**

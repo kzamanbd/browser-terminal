@@ -1,6 +1,6 @@
 {
-    "name": "web-terminal",
-    "version": "1.0.0",
+    "name": "kzamanbd/terminal",
+    "version": "1.0.3",
     "description": "This is a full stack application with react and node",
     "engines": {
         "node": ">=18"
