@@ -5,7 +5,7 @@ set -e
 
 # Configuration
 DOCKER_HUB_USERNAME="kzamanbd"
-PROJECT_NAME="web-terminal"
+PROJECT_NAME="terminal"
 VERSION=${1:-"latest"}
 
 # Colors for output
